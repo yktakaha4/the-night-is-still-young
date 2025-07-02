@@ -6,6 +6,10 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   base: '/the-night-is-still-young/',
   plugins: [react()],
+  server: {
+    host: '0.0.0.0',
+    allowedHosts: true,
+  },
   test: {
     globals: true,
     environment: 'jsdom',
