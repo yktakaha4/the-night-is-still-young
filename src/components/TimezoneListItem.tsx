@@ -55,9 +55,13 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
   }
 
   const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = dayjs.tz(event.target.value, format, timezone)
-    if (newTime.isValid()) {
-      setTime(newTime)
+    try {
+      const newTime = dayjs.tz(event.target.value, format, timezone)
+      if (newTime.isValid()) {
+        setTime(newTime)
+      }
+    } catch (e) {
+      // ignore invalid date format
     }
   }
 

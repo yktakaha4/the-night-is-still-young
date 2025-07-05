@@ -26,20 +26,13 @@ export const TimezoneContext = createContext<TimezoneContextType | undefined>(
 export const TimezoneProvider = ({ children }: { children: ReactNode }) => {
   const [searchParams] = useSearchParams()
   const [time, setTime] = useState(dayjs())
-  const [format, setFormat] = useState('YYYY-MM-DD HH:mm')
+  const [format, setFormat] = useState('YYYY-MM-DD HH:mm:ss')
   const [timezones, setTimezones] = useState<string[]>(
     searchParams.getAll('tz')
   )
   const [mode, setMode] = useState<'now' | 'manual'>('now')
 
-  useEffect(() => {
-    if (mode === 'now') {
-      const interval = setInterval(() => {
-        setTime(dayjs())
-      }, 1000)
-      return () => clearInterval(interval)
-    }
-  }, [mode])
+  
 
   const handleSetTimezones = useCallback((newTimezones: string[]) => {
     // remove duplicates

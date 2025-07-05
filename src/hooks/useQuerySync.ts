@@ -49,20 +49,30 @@ export const useQuerySync = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // Run only once on mount
 
-  // Serialize state to URL params
+  // Serialize settings to URL params
   useEffect(() => {
-    // Do not run on initial load to avoid overwriting the initial state from URL
-    if (!isInitialLoad.current) {
-      const params = new URLSearchParams()
-      if (mode === 'manual') {
-        params.set('time', time.toISOString())
-      }
-      params.set('format', format)
-      params.set('timezones', timezones.join(','))
-      params.set('mode', mode)
+    if (isInitialLoad.current) return
+    const params = new URLSearchParams()
+    params.set('format', format)
+    params.set('timezones', timezones.join(','))
+    params.set('mode', mode)
+    if (mode === 'manual') {
+      params.set('time', time.toISOString())
+    }
+    setSearchParams(params, { replace: true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [format, timezones, mode, setSearchParams])
+
+  // Serialize time to URL params only in manual mode
+  useEffect(() => {
+    if (isInitialLoad.current) return
+    if (mode === 'manual') {
+      const params = new URLSearchParams(searchParams)
+      params.set('time', time.toISOString())
       setSearchParams(params, { replace: true })
     }
-  }, [time, format, timezones, mode, setSearchParams])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [time, mode, setSearchParams])
 
   // Update time every second if in 'now' mode
   useEffect(() => {

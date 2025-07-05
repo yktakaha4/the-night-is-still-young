@@ -57,13 +57,13 @@ describe('App', () => {
     await user.click(manualModeButton)
 
     const tokyoInput = screen.getByTestId('time-input-Asia/Tokyo')
-    fireEvent.change(tokyoInput, { target: { value: '2025-07-05 19:00' } })
+    fireEvent.change(tokyoInput, { target: { value: '2025-07-05 19:00:00' } })
 
     await waitFor(() => {
       const newYorkInput = screen.getByTestId(
         'time-input-America/New_York'
       ) as HTMLInputElement
-      expect(newYorkInput.value).toBe('2025-07-05 06:00')
+      expect(newYorkInput.value).toBe('2025-07-05 06:00:00')
     })
   })
 })
