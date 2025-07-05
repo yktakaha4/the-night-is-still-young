@@ -1,9 +1,10 @@
 import {
-  ListItem,
   Typography,
   IconButton,
   TextField,
   Autocomplete,
+  Paper,
+  Stack,
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { useContext } from 'react'
@@ -41,9 +42,15 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
     newValue: string | null
   ) => {
     if (newValue) {
-      setTimezones(
-        selectedTimezones.map((tz) => (tz === timezone ? newValue : tz))
-      )
+      if (selectedTimezones.includes(newValue)) {
+        // If the new timezone already exists, just remove the current one.
+        setTimezones(selectedTimezones.filter((tz) => tz !== timezone))
+      } else {
+        // Otherwise, replace the current timezone with the new one.
+        setTimezones(
+          selectedTimezones.map((tz) => (tz === timezone ? newValue : tz))
+        )
+      }
     }
   }
 
@@ -55,28 +62,31 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
   }
 
   return (
-    <ListItem>
-      <Autocomplete
-        options={timezones}
-        value={timezone}
-        onChange={handleTimezoneChange}
-        renderInput={(params) => <TextField {...params} label="国名" />}
-        sx={{ width: 300 }}
-      />
-      <Typography>は</Typography>
-      <TextField
-        value={time.tz(timezone).format(format)}
-        onChange={handleTimeChange}
-        InputProps={{
-          readOnly: mode === 'now',
-        }}
-        inputProps={{
-          'data-testid': `time-input-${timezone}`,
-        }}
-      />
-      <IconButton aria-label="delete" onClick={handleDelete}>
-        <DeleteIcon />
-      </IconButton>
-    </ListItem>
+    <Paper sx={{ p: 2 }} role="listitem">
+      <Stack direction="row" spacing={2} alignItems="center">
+        <Autocomplete
+          options={timezones}
+          value={timezone}
+          onChange={handleTimezoneChange}
+          renderInput={(params) => <TextField {...params} label="Timezone" />}
+          sx={{ flex: 1 }}
+        />
+        <Typography>is</Typography>
+        <TextField
+          value={time.tz(timezone).format(format)}
+          onChange={handleTimeChange}
+          InputProps={{
+            readOnly: mode === 'now',
+          }}
+          inputProps={{
+            'data-testid': `time-input-${timezone}`,
+          }}
+          sx={{ flex: 1 }}
+        />
+        <IconButton aria-label="delete" onClick={handleDelete}>
+          <DeleteIcon />
+        </IconButton>
+      </Stack>
+    </Paper>
   )
 }

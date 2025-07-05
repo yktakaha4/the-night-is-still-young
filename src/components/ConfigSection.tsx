@@ -4,6 +4,8 @@ import {
   ToggleButtonGroup,
   ToggleButton,
   TextField,
+  Stack,
+  Paper,
 } from '@mui/material'
 import { useContext } from 'react'
 import { TimezoneContext } from '../contexts/TimezoneContext'
@@ -27,24 +29,31 @@ export const ConfigSection = () => {
   }
 
   return (
-    <Box component="section" sx={{ mb: 2 }}>
-      <Typography variant="h2" gutterBottom>
-        設定
-      </Typography>
-      <ToggleButtonGroup
-        value={mode}
-        exclusive
-        onChange={handleModeChange}
-        aria-label="text alignment"
-      >
-        <ToggleButton value="now">現在時刻</ToggleButton>
-        <ToggleButton value="manual">手動入力</ToggleButton>
-      </ToggleButtonGroup>
-      <TextField
-        label="日付文字列フォーマット"
-        value={format}
-        onChange={(e) => setFormat(e.target.value)}
-      />
-    </Box>
+    <Paper component="section" sx={{ mb: 4, p: 2 }}>
+      <Stack spacing={2}>
+        <Typography variant="h5" component="h2">
+          Config
+        </Typography>
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Typography>Mode:</Typography>
+          <ToggleButtonGroup
+            value={mode}
+            exclusive
+            onChange={handleModeChange}
+            aria-label="Mode"
+            size="small"
+          >
+            <ToggleButton value="now">Now</ToggleButton>
+            <ToggleButton value="manual">Manual</ToggleButton>
+          </ToggleButtonGroup>
+        </Stack>
+        <TextField
+          label="Date format string"
+          value={format}
+          onChange={(e) => setFormat(e.target.value)}
+          fullWidth
+        />
+      </Stack>
+    </Paper>
   )
 }
