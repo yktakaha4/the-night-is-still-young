@@ -9,7 +9,7 @@ import {
   createFilterOptions,
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { useContext } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import { TimezoneContext } from '../contexts/TimezoneContext'
 import dayjs from '../lib/dayjs'
 import { getCountryForTimezone } from 'countries-and-timezones'
@@ -38,6 +38,8 @@ const getOptionLabel = (option: string) => {
 
 export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
   const context = useContext(TimezoneContext)
+  const [inputValue, setInputValue] = useState('')
+  const [isFocused, setIsFocused] = useState(false)
 
   if (!context) {
     return null
@@ -51,6 +53,12 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
     setTimezones,
     mode,
   } = context
+
+  useEffect(() => {
+    if (!isFocused) {
+      setInputValue(time.tz(timezone).format(format))
+    }
+  }, [time, timezone, format, isFocused])
 
   const handleDelete = () => {
     setTimezones(selectedTimezones.filter((tz) => tz !== timezone))
@@ -74,13 +82,28 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
   }
 
   const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value
+    setInputValue(newValue)
+
     try {
-      const newTime = dayjs.tz(event.target.value, format, timezone)
+      const newTime = dayjs.tz(newValue, format, timezone)
       if (newTime.isValid()) {
         setTime(newTime)
       }
     } catch (e) {
       // ignore invalid date format
+    }
+  }
+
+  const handleFocus = () => {
+    setIsFocused(true)
+  }
+
+  const handleBlur = () => {
+    setIsFocused(false)
+    const newTime = dayjs.tz(inputValue, format, timezone)
+    if (!newTime.isValid()) {
+      setInputValue(time.tz(timezone).format(format))
     }
   }
 
@@ -111,8 +134,10 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
         />
         <Typography>is</Typography>
         <TextField
-          value={time.tz(timezone).format(format)}
+          value={inputValue}
           onChange={handleTimeChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           InputProps={{
             readOnly: mode === 'now',
           }}
