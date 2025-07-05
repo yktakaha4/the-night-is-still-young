@@ -13,6 +13,11 @@ import { useContext, useState, useEffect } from 'react'
 import { TimezoneContext } from '../contexts/TimezoneContext'
 import dayjs from '../lib/dayjs'
 import { getCountryForTimezone } from 'countries-and-timezones'
+import utc from 'dayjs/plugin/utc'
+import timezonePlugin from 'dayjs/plugin/timezone'
+
+dayjs.extend(utc)
+dayjs.extend(timezonePlugin)
 
 interface TimezoneListItemProps {
   timezone: string
@@ -25,15 +30,23 @@ const getCountryName = (timezone: string) => {
   return country ? country.name : null
 }
 
+const getUTCOffset = (timezone: string) => {
+  return dayjs().tz(timezone).format('Z')
+}
+
 const filterOptions = createFilterOptions({
   stringify: (option: string) => {
     const countryName = getCountryName(option)
-    return `${option} ${countryName || ''}`
+    const utcOffset = getUTCOffset(option)
+    return `${option} ${countryName || ''} ${utcOffset}`
   },
 })
 
 const getOptionLabel = (option: string) => {
-  return option
+  const countryName = getCountryName(option)
+  const utcOffset = getUTCOffset(option)
+  const details = [countryName, utcOffset].filter(Boolean).join(', ')
+  return `${option} (${details})`
 }
 
 export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
@@ -120,12 +133,16 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
           renderOption={(props, option) => {
             const { key, ...rest } = props as any
             const countryName = getCountryName(option)
+            const utcOffset = getUTCOffset(option)
+            const details = [countryName, utcOffset]
+              .filter(Boolean)
+              .join(', ')
             return (
               <Box component="li" key={key} {...rest}>
                 {option}
-                {countryName && (
+                {details && (
                   <Typography variant="caption" sx={{ ml: 1, color: 'gray' }}>
-                    ({countryName})
+                    ({details})
                   </Typography>
                 )}
               </Box>
