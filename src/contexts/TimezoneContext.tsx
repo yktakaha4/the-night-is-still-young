@@ -8,6 +8,8 @@ interface TimezoneContextType {
   setFormat: (format: string) => void
   timezones: string[]
   setTimezones: (timezones: string[]) => void
+  mode: 'now' | 'manual'
+  setMode: (mode: 'now' | 'manual') => void
 }
 
 export const TimezoneContext = createContext<TimezoneContextType | undefined>(
@@ -18,10 +20,20 @@ export const TimezoneProvider = ({ children }: { children: ReactNode }) => {
   const [time, setTime] = useState(dayjs())
   const [format, setFormat] = useState('YYYY-MM-DD HH:mm')
   const [timezones, setTimezones] = useState(['Asia/Tokyo'])
+  const [mode, setMode] = useState<'now' | 'manual'>('now')
 
   return (
     <TimezoneContext.Provider
-      value={{ time, setTime, format, setFormat, timezones, setTimezones }}
+      value={{
+        time,
+        setTime,
+        format,
+        setFormat,
+        timezones,
+        setTimezones,
+        mode,
+        setMode,
+      }}
     >
       {children}
     </TimezoneContext.Provider>

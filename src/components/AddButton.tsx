@@ -12,8 +12,12 @@ export const AddButton = () => {
   const { timezones, setTimezones } = context
 
   const handleAdd = () => {
-    // Add a default timezone for now. This will be improved later.
-    setTimezones([...timezones, 'America/New_York'])
+    const defaultTimezone = 'Asia/Tokyo'
+    const alternativeTimezone = 'America/New_York'
+    const newTimezone = timezones.includes(defaultTimezone)
+      ? alternativeTimezone
+      : defaultTimezone
+    setTimezones([...timezones, newTimezone])
   }
 
   return (

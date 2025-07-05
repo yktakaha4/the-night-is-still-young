@@ -23,13 +23,20 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
     return null
   }
 
-  const { time, format, timezones: selectedTimezones, setTimezones } = context
+  const {
+    time,
+    setTime,
+    format,
+    timezones: selectedTimezones,
+    setTimezones,
+    mode,
+  } = context
 
   const handleDelete = () => {
     setTimezones(selectedTimezones.filter((tz) => tz !== timezone))
   }
 
-  const handleChange = (
+  const handleTimezoneChange = (
     _event: unknown,
     newValue: string | null
   ) => {
@@ -40,17 +47,33 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
     }
   }
 
+  const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newTime = dayjs.tz(event.target.value, format, timezone)
+    if (newTime.isValid()) {
+      setTime(newTime)
+    }
+  }
+
   return (
     <ListItem>
       <Autocomplete
         options={timezones}
         value={timezone}
-        onChange={handleChange}
+        onChange={handleTimezoneChange}
         renderInput={(params) => <TextField {...params} label="国名" />}
         sx={{ width: 300 }}
       />
       <Typography>は</Typography>
-      <TextField value={time.tz(timezone).format(format)} />
+      <TextField
+        value={time.tz(timezone).format(format)}
+        onChange={handleTimeChange}
+        InputProps={{
+          readOnly: mode === 'now',
+        }}
+        inputProps={{
+          'data-testid': `time-input-${timezone}`,
+        }}
+      />
       <IconButton aria-label="delete" onClick={handleDelete}>
         <DeleteIcon />
       </IconButton>
