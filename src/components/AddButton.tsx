@@ -2,6 +2,8 @@ import { Box, Button } from '@mui/material'
 import { useContext } from 'react'
 import { TimezoneContext } from '../contexts/TimezoneContext'
 
+const allTimezones = Intl.supportedValuesOf('timeZone')
+
 export const AddButton = () => {
   const context = useContext(TimezoneContext)
 
@@ -12,8 +14,8 @@ export const AddButton = () => {
   const { timezones, setTimezones } = context
 
   const handleAdd = () => {
-    const newTimezone = 'America/New_York'
-    if (!timezones.includes(newTimezone)) {
+    const newTimezone = allTimezones.find((tz) => !timezones.includes(tz))
+    if (newTimezone) {
       setTimezones([...timezones, newTimezone])
     }
   }
