@@ -5,17 +5,24 @@ import {
   Autocomplete,
   Paper,
   Stack,
+  Box,
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { useContext } from 'react'
 import { TimezoneContext } from '../contexts/TimezoneContext'
 import dayjs from '../lib/dayjs'
+import { getCountryForTimezone } from 'countries-and-timezones'
 
 interface TimezoneListItemProps {
   timezone: string
 }
 
 const timezones = Intl.supportedValuesOf('timeZone')
+
+const getCountryName = (timezone: string) => {
+  const country = getCountryForTimezone(timezone)
+  return country ? country.name : null
+}
 
 export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
   const context = useContext(TimezoneContext)
@@ -73,6 +80,19 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
           value={timezone}
           onChange={handleTimezoneChange}
           renderInput={(params) => <TextField {...params} label="Timezone" />}
+          renderOption={(props, option) => {
+            const countryName = getCountryName(option)
+            return (
+              <Box component="li" {...props}>
+                {option}
+                {countryName && (
+                  <Typography variant="caption" sx={{ ml: 1, color: 'gray' }}>
+                    ({countryName})
+                  </Typography>
+                )}
+              </Box>
+            )
+          }}
           sx={{ flex: 1 }}
         />
         <Typography>is</Typography>
