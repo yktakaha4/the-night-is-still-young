@@ -26,7 +26,9 @@ describe('App', () => {
     await user.click(addButton)
     expect(screen.getAllByRole('listitem')).toHaveLength(2)
     expect(screen.getByDisplayValue('Asia/Tokyo')).toBeInTheDocument()
-    expect(screen.getByDisplayValue('America/New_York')).toBeInTheDocument()
+    const allTimezones = Intl.supportedValuesOf('timeZone')
+    const expectedTimezone = allTimezones.find((tz) => tz !== 'Asia/Tokyo')
+    expect(screen.getByDisplayValue(expectedTimezone!)).toBeInTheDocument()
   })
 
   it('removes a timezone when the delete button is clicked', async () => {

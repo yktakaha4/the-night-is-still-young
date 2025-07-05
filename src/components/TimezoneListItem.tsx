@@ -118,9 +118,10 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
           getOptionLabel={getOptionLabel}
           renderInput={(params) => <TextField {...params} label="Timezone" />}
           renderOption={(props, option) => {
+            const { key, ...rest } = props as any
             const countryName = getCountryName(option)
             return (
-              <Box component="li" {...props}>
+              <Box component="li" key={key} {...rest}>
                 {option}
                 {countryName && (
                   <Typography variant="caption" sx={{ ml: 1, color: 'gray' }}>
