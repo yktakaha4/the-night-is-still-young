@@ -6,6 +6,7 @@ import {
   Paper,
   Stack,
   Box,
+  createFilterOptions,
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { useContext } from 'react'
@@ -22,6 +23,17 @@ const timezones = Intl.supportedValuesOf('timeZone')
 const getCountryName = (timezone: string) => {
   const country = getCountryForTimezone(timezone)
   return country ? country.name : null
+}
+
+const filterOptions = createFilterOptions({
+  stringify: (option: string) => {
+    const countryName = getCountryName(option)
+    return `${option} ${countryName || ''}`
+  },
+})
+
+const getOptionLabel = (option: string) => {
+  return option
 }
 
 export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
@@ -79,6 +91,8 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
           options={timezones}
           value={timezone}
           onChange={handleTimezoneChange}
+          filterOptions={filterOptions}
+          getOptionLabel={getOptionLabel}
           renderInput={(params) => <TextField {...params} label="Timezone" />}
           renderOption={(props, option) => {
             const countryName = getCountryName(option)
