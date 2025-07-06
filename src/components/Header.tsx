@@ -19,7 +19,7 @@ export const Header = () => {
         The night is still young
       </Typography>
       <Typography variant="body1" align="center" sx={{ mb: 4 }}>
-        複数のタイムゾーンの時刻の確認が簡単にできるWebサイトです。
+        複数タイムゾーンの時刻を簡単に確認できるWebサイトです。
       </Typography>
     </>
   )
