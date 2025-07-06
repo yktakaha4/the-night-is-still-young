@@ -9,12 +9,15 @@ import {
   createFilterOptions,
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator'
 import { useContext, useState, useEffect } from 'react'
 import { TimezoneContext } from '../contexts/TimezoneContext'
 import dayjs from '../lib/dayjs'
 import { getCountryForTimezone } from 'countries-and-timezones'
 import utc from 'dayjs/plugin/utc'
 import timezonePlugin from 'dayjs/plugin/timezone'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 dayjs.extend(utc)
 dayjs.extend(timezonePlugin)
@@ -53,6 +56,21 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
   const context = useContext(TimezoneContext)
   const [inputValue, setInputValue] = useState('')
   const [isFocused, setIsFocused] = useState(false)
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: timezone })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 1 : 0,
+    position: 'relative' as const,
+  }
 
   if (!context) {
     return null
@@ -121,11 +139,20 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
   }
 
   return (
-    <Paper sx={{ p: 2 }} role="listitem">
+    <Paper
+      ref={setNodeRef}
+      style={style}
+      sx={{ p: 2, display: 'flex', alignItems: 'center' }}
+      role="listitem"
+    >
+      <Box {...attributes} {...listeners} sx={{ cursor: 'grab', mr: 1 }}>
+        <DragIndicatorIcon />
+      </Box>
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
         spacing={2}
         alignItems="center"
+        sx={{ flex: 1 }}
       >
         <Stack
           direction="row"
