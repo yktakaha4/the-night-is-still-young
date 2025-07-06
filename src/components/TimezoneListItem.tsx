@@ -49,7 +49,7 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
 
   const selectedTimezoneData = useMemo(
     () => timezoneMap.get(timezone),
-    [timezone]
+    [timezone],
   )
 
   if (!context) {
@@ -77,14 +77,14 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
 
   const handleTimezoneChange = (
     _event: unknown,
-    newValue: (typeof timezoneData)[number] | null
+    newValue: (typeof timezoneData)[number] | null,
   ) => {
     if (newValue) {
       if (selectedTimezones.includes(newValue.id)) {
         setTimezones(selectedTimezones.filter((tz) => tz !== timezone))
       } else {
         setTimezones(
-          selectedTimezones.map((tz) => (tz === timezone ? newValue.id : tz))
+          selectedTimezones.map((tz) => (tz === timezone ? newValue.id : tz)),
         )
       }
     }
@@ -144,7 +144,9 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
             onChange={handleTimezoneChange}
             filterOptions={filterOptions}
             getOptionLabel={(option) => option.label}
-            renderInput={(params) => <TextField {...params} label="タイムゾーン" />}
+            renderInput={(params) => (
+              <TextField {...params} label="タイムゾーン" />
+            )}
             renderOption={(props, option) => {
               const { key, ...rest } = props as any
               return (

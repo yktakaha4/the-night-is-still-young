@@ -20,7 +20,7 @@ interface TimezoneContextType {
 }
 
 export const TimezoneContext = createContext<TimezoneContextType | undefined>(
-  undefined
+  undefined,
 )
 
 export const TimezoneProvider = ({ children }: { children: ReactNode }) => {
@@ -56,7 +56,7 @@ export const TimezoneProvider = ({ children }: { children: ReactNode }) => {
   const [time, setTime] = useState<Dayjs>(() => getInitialTime(mode))
   const [format, setFormat] = useState(getInitialFormat)
   const [timezones, setTimezones] = useState<string[]>(
-    searchParams.getAll('tz')
+    searchParams.getAll('tz'),
   )
 
   const handleSetTimezones = useCallback((newTimezones: string[]) => {

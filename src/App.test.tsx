@@ -18,7 +18,7 @@ const renderApp = (initialEntries: string[] = ['/']) => {
   const view = render(
     <MemoryRouter initialEntries={initialEntries}>
       <App />
-    </MemoryRouter>
+    </MemoryRouter>,
   )
   return { user, ...view }
 }
@@ -32,16 +32,18 @@ describe('App', () => {
 
   it('adds a new timezone when the add button is clicked', async () => {
     const { user } = renderApp(['/?tz=Asia/Tokyo'])
-    const addButton = screen.getByRole('button', { name: /タイムゾーンを追加/i })
+    const addButton = screen.getByRole('button', {
+      name: /タイムゾーンを追加/i,
+    })
     await user.click(addButton)
     expect(screen.getAllByRole('listitem')).toHaveLength(2)
     expect(
-      screen.getByDisplayValue(getOptionLabel('Asia/Tokyo'))
+      screen.getByDisplayValue(getOptionLabel('Asia/Tokyo')),
     ).toBeInTheDocument()
     const allTimezones = Intl.supportedValuesOf('timeZone')
     const expectedTimezone = allTimezones.find((tz) => tz !== 'Asia/Tokyo')
     expect(
-      screen.getByDisplayValue(getOptionLabel(expectedTimezone!))
+      screen.getByDisplayValue(getOptionLabel(expectedTimezone!)),
     ).toBeInTheDocument()
   })
 
@@ -50,7 +52,7 @@ describe('App', () => {
     const deleteButtons = screen.getAllByRole('button', { name: /delete/i })
     await user.click(deleteButtons[0])
     expect(
-      screen.queryByDisplayValue(getOptionLabel('Asia/Tokyo'))
+      screen.queryByDisplayValue(getOptionLabel('Asia/Tokyo')),
     ).not.toBeInTheDocument()
   })
 
@@ -64,10 +66,10 @@ describe('App', () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByDisplayValue(getOptionLabel('Asia/Tokyo'))
+        screen.queryByDisplayValue(getOptionLabel('Asia/Tokyo')),
       ).not.toBeInTheDocument()
       expect(
-        screen.getByDisplayValue(getOptionLabel('Europe/London'))
+        screen.getByDisplayValue(getOptionLabel('Europe/London')),
       ).toBeInTheDocument()
       expect(screen.getAllByRole('listitem')).toHaveLength(1)
     })
@@ -83,7 +85,7 @@ describe('App', () => {
 
     await waitFor(() => {
       const newYorkInput = screen.getByTestId(
-        'time-input-America/New_York'
+        'time-input-America/New_York',
       ) as HTMLInputElement
       expect(newYorkInput.value).toBe('2025/07/05 06:00:00')
     })

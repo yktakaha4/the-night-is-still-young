@@ -27,7 +27,7 @@ export const ConfigSection = () => {
   const [formatAnchorEl, setFormatAnchorEl] =
     useState<HTMLButtonElement | null>(null)
   const [modeAnchorEl, setModeAnchorEl] = useState<HTMLButtonElement | null>(
-    null
+    null,
   )
 
   if (!context) {
@@ -38,7 +38,7 @@ export const ConfigSection = () => {
 
   const handleModeChange = (
     _event: React.MouseEvent<HTMLElement>,
-    newMode: 'now' | 'manual' | null
+    newMode: 'now' | 'manual' | null,
   ) => {
     if (newMode !== null) {
       setMode(newMode)
@@ -46,7 +46,7 @@ export const ConfigSection = () => {
   }
 
   const handleFormatPopoverOpen = (
-    event: React.MouseEvent<HTMLButtonElement>
+    event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     setFormatAnchorEl(event.currentTarget)
   }
@@ -56,7 +56,7 @@ export const ConfigSection = () => {
   }
 
   const handleModePopoverOpen = (
-    event: React.MouseEvent<HTMLButtonElement>
+    event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     setModeAnchorEl(event.currentTarget)
   }
