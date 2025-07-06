@@ -19,6 +19,7 @@ interface TimezoneContextType {
   setMode: (mode: 'now' | 'manual') => void
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const TimezoneContext = createContext<TimezoneContextType | undefined>(
   undefined,
 )

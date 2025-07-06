@@ -52,6 +52,12 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
     [timezone],
   )
 
+  useEffect(() => {
+    if (context && !isFocused) {
+      setInputValue(context.time.tz(timezone).format(context.format))
+    }
+  }, [context, timezone, isFocused])
+
   if (!context) {
     return null
   }
@@ -64,12 +70,6 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
     setTimezones,
     mode,
   } = context
-
-  useEffect(() => {
-    if (!isFocused) {
-      setInputValue(time.tz(timezone).format(format))
-    }
-  }, [time, timezone, format, isFocused])
 
   const handleDelete = () => {
     setTimezones(selectedTimezones.filter((tz) => tz !== timezone))
