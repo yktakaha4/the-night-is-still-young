@@ -62,7 +62,7 @@ function App() {
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          minHeight: '96vh',
+          minHeight: '100vh',
         }}
       >
         <Box sx={{ flex: 1 }}>
