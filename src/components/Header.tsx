@@ -16,9 +16,6 @@ export const Header = () => {
         align="center"
         sx={{ mb: 4, fontWeight: 300 }}
       >
-        The night is still young
-      </Typography>
-      <Typography variant="body1" align="center" sx={{ mb: 4 }}>
         複数タイムゾーンの時刻を簡単に確認できるWebサイトです。
       </Typography>
     </>
