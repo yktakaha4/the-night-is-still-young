@@ -26,7 +26,7 @@ export const TimezoneContext = createContext<TimezoneContextType | undefined>(
 export const TimezoneProvider = ({ children }: { children: ReactNode }) => {
   const [searchParams] = useSearchParams()
   const [time, setTime] = useState(dayjs())
-  const [format, setFormat] = useState('YYYY-MM-DD HH:mm:ss')
+  const [format, setFormat] = useState('YYYY/MM/DD HH:mm:ss')
   const [timezones, setTimezones] = useState<string[]>(
     searchParams.getAll('tz')
   )
