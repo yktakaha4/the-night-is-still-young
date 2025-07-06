@@ -10,47 +10,22 @@ import {
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator'
-import { useContext, useState, useEffect } from 'react'
+import { useContext, useState, useEffect, useMemo } from 'react'
 import { TimezoneContext } from '../contexts/TimezoneContext'
 import dayjs from '../lib/dayjs'
-import { getCountryForTimezone } from 'countries-and-timezones'
-import utc from 'dayjs/plugin/utc'
-import timezonePlugin from 'dayjs/plugin/timezone'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-
-dayjs.extend(utc)
-dayjs.extend(timezonePlugin)
+import { timezoneData, timezoneMap } from '../lib/timezones'
 
 interface TimezoneListItemProps {
   timezone: string
 }
 
-const timezones = Intl.supportedValuesOf('timeZone')
-
-const getCountryName = (timezone: string) => {
-  const country = getCountryForTimezone(timezone)
-  return country ? country.name : null
-}
-
-const getUTCOffset = (timezone: string) => {
-  return dayjs().tz(timezone).format('Z')
-}
-
 const filterOptions = createFilterOptions({
-  stringify: (option: string) => {
-    const countryName = getCountryName(option)
-    const utcOffset = getUTCOffset(option)
-    return `${option} ${countryName || ''} ${utcOffset}`
+  stringify: (option: (typeof timezoneData)[number]) => {
+    return option.label
   },
 })
-
-const getOptionLabel = (option: string) => {
-  const countryName = getCountryName(option)
-  const utcOffset = getUTCOffset(option)
-  const details = [countryName, utcOffset].filter(Boolean).join(', ')
-  return `${option} (${details})`
-}
 
 export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
   const context = useContext(TimezoneContext)
@@ -71,6 +46,11 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
     zIndex: isDragging ? 1 : 0,
     position: 'relative' as const,
   }
+
+  const selectedTimezoneData = useMemo(
+    () => timezoneMap.get(timezone),
+    [timezone]
+  )
 
   if (!context) {
     return null
@@ -97,16 +77,14 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
 
   const handleTimezoneChange = (
     _event: unknown,
-    newValue: string | null
+    newValue: (typeof timezoneData)[number] | null
   ) => {
     if (newValue) {
-      if (selectedTimezones.includes(newValue)) {
-        // If the new timezone already exists, just remove the current one.
+      if (selectedTimezones.includes(newValue.id)) {
         setTimezones(selectedTimezones.filter((tz) => tz !== timezone))
       } else {
-        // Otherwise, replace the current timezone with the new one.
         setTimezones(
-          selectedTimezones.map((tz) => (tz === timezone ? newValue : tz))
+          selectedTimezones.map((tz) => (tz === timezone ? newValue.id : tz))
         )
       }
     }
@@ -161,30 +139,17 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
           sx={{ width: '100%', flex: 1 }}
         >
           <Autocomplete
-            options={timezones}
-            value={timezone}
+            options={timezoneData}
+            value={selectedTimezoneData}
             onChange={handleTimezoneChange}
             filterOptions={filterOptions}
-            getOptionLabel={getOptionLabel}
+            getOptionLabel={(option) => option.label}
             renderInput={(params) => <TextField {...params} label="タイムゾーン" />}
             renderOption={(props, option) => {
               const { key, ...rest } = props as any
-              const countryName = getCountryName(option)
-              const utcOffset = getUTCOffset(option)
-              const details = [countryName, utcOffset]
-                .filter(Boolean)
-                .join(', ')
               return (
                 <Box component="li" key={key} {...rest}>
-                  {option}
-                  {details && (
-                    <Typography
-                      variant="caption"
-                      sx={{ ml: 1, color: 'gray' }}
-                    >
-                      ({details})
-                    </Typography>
-                  )}
+                  {option.label}
                 </Box>
               )
             }}
