@@ -48,58 +48,75 @@ export const ConfigSection = () => {
   const handleClose = () => {
     setAnchorEl(null)
   }
-
   const open = Boolean(anchorEl)
   const id = open ? 'format-legend-popover' : undefined
 
   return (
-    <Paper component="section" sx={{ mb: 4, p: 2 }}>
-      <Stack spacing={2}>
-        <Typography variant="h5" component="h2">
-          Config
-        </Typography>
-        <Stack direction="row" spacing={2} alignItems="center">
-          <Typography>Mode:</Typography>
-          <ToggleButtonGroup
-            value={mode}
-            exclusive
-            onChange={handleModeChange}
-            aria-label="Mode"
-            size="small"
-          >
-            <ToggleButton value="now">Now</ToggleButton>
-            <ToggleButton value="manual">Manual</ToggleButton>
-          </ToggleButtonGroup>
+    <Box
+      sx={{
+        display: 'flex',
+        width: '100%',
+      }}
+    >
+      <Paper
+        component="section"
+        sx={{
+          mb: 4,
+          p: 2,
+          width: '100%',
+          maxWidth: {
+            xs: '100%',
+            md: '50%',
+          },
+        }}
+      >
+        <Stack spacing={2}>
+          <Typography variant="h5" component="h2">
+            Config
+          </Typography>
+          <Stack direction="row" spacing={2} alignItems="center">
+            <Typography>Mode:</Typography>
+            <ToggleButtonGroup
+              value={mode}
+              exclusive
+              onChange={handleModeChange}
+              aria-label="Mode"
+              size="small"
+            >
+              <ToggleButton value="now">Now</ToggleButton>
+              <ToggleButton value="manual">Manual</ToggleButton>
+            </ToggleButtonGroup>
+          </Stack>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <TextField
+              label="Date format string"
+              value={format}
+              onChange={(e) => setFormat(e.target.value)}
+              fullWidth
+            />
+            <IconButton aria-describedby={id} onClick={handleClick}>
+              <InfoOutlinedIcon />
+            </IconButton>
+            <Popover
+              id={id}
+              open={open}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+            >
+              <Box sx={{ whiteSpace: 'pre-wrap', p: 2 }}>
+                <Typography variant="body2">
+                  Day.js format string is available.
+                </Typography>
+                <Typography variant="caption">{formatLegend}</Typography>
+              </Box>
+            </Popover>
+          </Box>
         </Stack>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <TextField
-            label="Date format string"
-            value={format}
-            onChange={(e) => setFormat(e.target.value)}
-            fullWidth
-          />
-          <IconButton aria-describedby={id} onClick={handleClick}>
-            <InfoOutlinedIcon />
-          </IconButton>
-          <Popover
-            id={id}
-            open={open}
-            anchorEl={anchorEl}
-            onClose={handleClose}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-            }}
-          >
-            <Box sx={{ whiteSpace: 'pre-wrap', p: 2 }}>
-              <Typography variant="body2">
-                Day.js format string is available.
-              </Typography>
-              <Typography variant="caption">{formatLegend}</Typography>
-            </Box>
-          </Popover>
-        </Box>
-      </Stack>
-    </Paper>
+      </Paper>
+    </Box>
   )
 }

@@ -122,35 +122,49 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
 
   return (
     <Paper sx={{ p: 2 }} role="listitem">
-      <Stack direction="row" spacing={2} alignItems="center">
-        <Autocomplete
-          options={timezones}
-          value={timezone}
-          onChange={handleTimezoneChange}
-          filterOptions={filterOptions}
-          getOptionLabel={getOptionLabel}
-          renderInput={(params) => <TextField {...params} label="Timezone" />}
-          renderOption={(props, option) => {
-            const { key, ...rest } = props as any
-            const countryName = getCountryName(option)
-            const utcOffset = getUTCOffset(option)
-            const details = [countryName, utcOffset]
-              .filter(Boolean)
-              .join(', ')
-            return (
-              <Box component="li" key={key} {...rest}>
-                {option}
-                {details && (
-                  <Typography variant="caption" sx={{ ml: 1, color: 'gray' }}>
-                    ({details})
-                  </Typography>
-                )}
-              </Box>
-            )
-          }}
-          sx={{ flex: 1 }}
-        />
-        <Typography>is</Typography>
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        spacing={2}
+        alignItems="center"
+      >
+        <Stack
+          direction="row"
+          spacing={2}
+          alignItems="center"
+          sx={{ width: '100%', flex: 1 }}
+        >
+          <Autocomplete
+            options={timezones}
+            value={timezone}
+            onChange={handleTimezoneChange}
+            filterOptions={filterOptions}
+            getOptionLabel={getOptionLabel}
+            renderInput={(params) => <TextField {...params} label="Timezone" />}
+            renderOption={(props, option) => {
+              const { key, ...rest } = props as any
+              const countryName = getCountryName(option)
+              const utcOffset = getUTCOffset(option)
+              const details = [countryName, utcOffset]
+                .filter(Boolean)
+                .join(', ')
+              return (
+                <Box component="li" key={key} {...rest}>
+                  {option}
+                  {details && (
+                    <Typography
+                      variant="caption"
+                      sx={{ ml: 1, color: 'gray' }}
+                    >
+                      ({details})
+                    </Typography>
+                  )}
+                </Box>
+              )
+            }}
+            sx={{ width: '100%', flex: 1 }}
+          />
+          <Typography>is</Typography>
+        </Stack>
         <TextField
           value={inputValue}
           onChange={handleTimeChange}
@@ -162,7 +176,7 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
           inputProps={{
             'data-testid': `time-input-${timezone}`,
           }}
-          sx={{ flex: 1 }}
+          sx={{ width: '100%', flex: 1 }}
         />
         <IconButton aria-label="delete" onClick={handleDelete}>
           <DeleteIcon />
