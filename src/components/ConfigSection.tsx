@@ -24,7 +24,11 @@ const formatLegend = `
 
 export const ConfigSection = () => {
   const context = useContext(TimezoneContext)
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+  const [formatAnchorEl, setFormatAnchorEl] =
+    useState<HTMLButtonElement | null>(null)
+  const [modeAnchorEl, setModeAnchorEl] = useState<HTMLButtonElement | null>(
+    null
+  )
 
   if (!context) {
     return null
@@ -41,15 +45,33 @@ export const ConfigSection = () => {
     }
   }
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget)
+  const handleFormatPopoverOpen = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    setFormatAnchorEl(event.currentTarget)
   }
 
-  const handleClose = () => {
-    setAnchorEl(null)
+  const handleFormatPopoverClose = () => {
+    setFormatAnchorEl(null)
   }
-  const open = Boolean(anchorEl)
-  const id = open ? 'format-legend-popover' : undefined
+
+  const handleModePopoverOpen = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    setModeAnchorEl(event.currentTarget)
+  }
+
+  const handleModePopoverClose = () => {
+    setModeAnchorEl(null)
+  }
+
+  const isFormatPopoverOpen = Boolean(formatAnchorEl)
+  const formatPopoverId = isFormatPopoverOpen
+    ? 'format-legend-popover'
+    : undefined
+
+  const isModePopoverOpen = Boolean(modeAnchorEl)
+  const modePopoverId = isModePopoverOpen ? 'mode-info-popover' : undefined
 
   return (
     <Box
@@ -86,22 +108,50 @@ export const ConfigSection = () => {
               <ToggleButton value="now">現在時刻</ToggleButton>
               <ToggleButton value="manual">手動</ToggleButton>
             </ToggleButtonGroup>
+            <IconButton
+              aria-describedby={modePopoverId}
+              onClick={handleModePopoverOpen}
+            >
+              <InfoOutlinedIcon />
+            </IconButton>
+            <Popover
+              id={modePopoverId}
+              open={isModePopoverOpen}
+              anchorEl={modeAnchorEl}
+              onClose={handleModePopoverClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+            >
+              <Stack sx={{ p: 2 }} spacing={1}>
+                <Typography variant="body2">
+                  <b>現在時刻:</b> 現在の時刻をリアルタイムで表示します。
+                </Typography>
+                <Typography variant="body2">
+                  <b>手動:</b> 時刻を手動で入力できます。
+                </Typography>
+              </Stack>
+            </Popover>
           </Stack>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <TextField
-              label="日付フォーマット"
+              label="日付フォーマット文字列"
               value={format}
               onChange={(e) => setFormat(e.target.value)}
               fullWidth
             />
-            <IconButton aria-describedby={id} onClick={handleClick}>
+            <IconButton
+              aria-describedby={formatPopoverId}
+              onClick={handleFormatPopoverOpen}
+            >
               <InfoOutlinedIcon />
             </IconButton>
             <Popover
-              id={id}
-              open={open}
-              anchorEl={anchorEl}
-              onClose={handleClose}
+              id={formatPopoverId}
+              open={isFormatPopoverOpen}
+              anchorEl={formatAnchorEl}
+              onClose={handleFormatPopoverClose}
               anchorOrigin={{
                 vertical: 'bottom',
                 horizontal: 'left',
