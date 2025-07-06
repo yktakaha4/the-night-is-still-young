@@ -9,7 +9,7 @@ export default defineConfig(({ command }) => ({
     host: '0.0.0.0',
     allowedHosts: true,
   },
-  base: command === 'build' ? '/the-night-is-still-young/' : '/',
+  base: '/the-night-is-still-young',
   test: {
     globals: true,
     environment: 'jsdom',
