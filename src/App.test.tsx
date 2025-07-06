@@ -26,7 +26,7 @@ const renderApp = (initialEntries: string[] = ['/']) => {
 describe('App', () => {
   it('renders header', () => {
     renderApp()
-    const headerElement = screen.getByText(/The night is still young/i)
+    const headerElement = screen.getByText(/東京は夜の七時/i)
     expect(headerElement).toBeInTheDocument()
   })
 
