@@ -89,9 +89,6 @@ export const ConfigSection = () => {
         }}
       >
         <Stack spacing={2}>
-          <Typography variant="h5" component="h2">
-            設定
-          </Typography>
           <Stack
             direction={{ xs: 'column', md: 'row' }}
             spacing={2}
