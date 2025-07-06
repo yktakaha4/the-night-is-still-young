@@ -9,6 +9,7 @@ export default defineConfig({
     host: '0.0.0.0',
     allowedHosts: true,
   },
+  base: '/the-night-is-still-young/',
   test: {
     globals: true,
     environment: 'jsdom',
