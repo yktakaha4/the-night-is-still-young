@@ -1,4 +1,5 @@
 import {
+  Box,
   Container,
   createTheme,
   CssBaseline,
@@ -10,6 +11,7 @@ import { TimezoneList } from './components/TimezoneList'
 import { AddButton } from './components/AddButton'
 import { TimezoneProvider } from './contexts/TimezoneContext'
 import { useQuerySync } from './hooks/useQuerySync'
+import { Footer } from './components/Footer'
 
 const theme = createTheme({
   palette: {
@@ -43,7 +45,7 @@ const theme = createTheme({
 const SyncedApp = () => {
   useQuerySync()
   return (
-    <Container sx={{ mt: 4 }}>
+    <Container>
       <Header />
       <ConfigSection />
       <TimezoneList />
@@ -56,9 +58,20 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <TimezoneProvider>
-        <SyncedApp />
-      </TimezoneProvider>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '96vh',
+        }}
+      >
+        <Box sx={{ flex: 1 }}>
+          <TimezoneProvider>
+            <SyncedApp />
+          </TimezoneProvider>
+        </Box>
+        <Footer />
+      </Box>
     </ThemeProvider>
   )
 }

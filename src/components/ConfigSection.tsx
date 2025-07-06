@@ -136,7 +136,7 @@ export const ConfigSection = () => {
           </Stack>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <TextField
-              label="日付フォーマット文字列"
+              label="日付フォーマット"
               value={format}
               onChange={(e) => setFormat(e.target.value)}
               fullWidth
