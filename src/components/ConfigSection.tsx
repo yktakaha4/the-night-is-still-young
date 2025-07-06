@@ -85,7 +85,7 @@ export const ConfigSection = () => {
         sx={{
           mb: 4,
           p: 2,
-          width: '100%',
+          width: { xs: '100%', md: 'auto' },
         }}
       >
         <Stack spacing={2}>
@@ -95,15 +95,14 @@ export const ConfigSection = () => {
           <Stack
             direction={{ xs: 'column', md: 'row' }}
             spacing={2}
-            alignItems="center"
+            alignItems={{ xs: 'center', md: 'flex-start' }}
           >
             <Stack
               direction="row"
-              spacing={2}
               alignItems="center"
-              sx={{ width: '100%', flex: 1 }}
+              sx={{ width: { xs: '100%', md: 'auto' } }}
             >
-              <Typography>モード:</Typography>
+              <Typography sx={{ marginRight: '0.5rem' }}>モード:</Typography>
               <ToggleButtonGroup
                 value={mode}
                 exclusive
@@ -144,8 +143,7 @@ export const ConfigSection = () => {
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                width: '100%',
-                flex: 1,
+                width: { xs: '100%', md: 'auto' },
               }}
             >
               <TextField
