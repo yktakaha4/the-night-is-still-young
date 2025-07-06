@@ -46,7 +46,7 @@ export const TimezoneList = () => {
   return (
     <Box component="section" sx={{ mb: 2 }}>
       <Typography variant="h5" component="h2" sx={{ mb: 2 }}>
-        Timezones
+        タイムゾーン
       </Typography>
       <DndContext
         sensors={sensors}

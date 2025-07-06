@@ -23,7 +23,7 @@ export const AddButton = () => {
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
       <Button variant="contained" onClick={handleAdd}>
-        Add Timezone
+        タイムゾーンを追加
       </Button>
     </Box>
   )

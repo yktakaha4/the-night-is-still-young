@@ -72,10 +72,10 @@ export const ConfigSection = () => {
       >
         <Stack spacing={2}>
           <Typography variant="h5" component="h2">
-            Config
+            設定
           </Typography>
           <Stack direction="row" spacing={2} alignItems="center">
-            <Typography>Mode:</Typography>
+            <Typography>モード:</Typography>
             <ToggleButtonGroup
               value={mode}
               exclusive
@@ -83,13 +83,13 @@ export const ConfigSection = () => {
               aria-label="Mode"
               size="small"
             >
-              <ToggleButton value="now">Now</ToggleButton>
-              <ToggleButton value="manual">Manual</ToggleButton>
+              <ToggleButton value="now">現在時刻</ToggleButton>
+              <ToggleButton value="manual">手動</ToggleButton>
             </ToggleButtonGroup>
           </Stack>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <TextField
-              label="Date format string"
+              label="日付フォーマット"
               value={format}
               onChange={(e) => setFormat(e.target.value)}
               fullWidth
@@ -109,7 +109,14 @@ export const ConfigSection = () => {
             >
               <Box sx={{ whiteSpace: 'pre-wrap', p: 2 }}>
                 <Typography variant="body2">
-                  Day.js format string is available.
+                  <a
+                    href="https://day.js.org/docs/en/display/format"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Day.jsのフォーマット文字列
+                  </a>
+                  が使用できます。
                 </Typography>
                 <Typography variant="caption">{formatLegend}</Typography>
               </Box>

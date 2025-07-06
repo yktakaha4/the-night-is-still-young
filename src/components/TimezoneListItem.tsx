@@ -166,7 +166,7 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
             onChange={handleTimezoneChange}
             filterOptions={filterOptions}
             getOptionLabel={getOptionLabel}
-            renderInput={(params) => <TextField {...params} label="Timezone" />}
+            renderInput={(params) => <TextField {...params} label="タイムゾーン" />}
             renderOption={(props, option) => {
               const { key, ...rest } = props as any
               const countryName = getCountryName(option)
@@ -190,7 +190,7 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
             }}
             sx={{ width: '100%', flex: 1 }}
           />
-          <Typography>is</Typography>
+          <Typography>は</Typography>
         </Stack>
         <TextField
           value={inputValue}
