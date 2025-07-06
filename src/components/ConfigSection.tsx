@@ -86,92 +86,106 @@ export const ConfigSection = () => {
           mb: 4,
           p: 2,
           width: '100%',
-          maxWidth: {
-            xs: '100%',
-            md: '50%',
-          },
         }}
       >
         <Stack spacing={2}>
           <Typography variant="h5" component="h2">
             設定
           </Typography>
-          <Stack direction="row" spacing={2} alignItems="center">
-            <Typography>モード:</Typography>
-            <ToggleButtonGroup
-              value={mode}
-              exclusive
-              onChange={handleModeChange}
-              aria-label="Mode"
-              size="small"
+          <Stack
+            direction={{ xs: 'column', md: 'row' }}
+            spacing={2}
+            alignItems="center"
+          >
+            <Stack
+              direction="row"
+              spacing={2}
+              alignItems="center"
+              sx={{ width: '100%', flex: 1 }}
             >
-              <ToggleButton value="now">現在時刻</ToggleButton>
-              <ToggleButton value="manual">手動</ToggleButton>
-            </ToggleButtonGroup>
-            <IconButton
-              aria-describedby={modePopoverId}
-              onClick={handleModePopoverOpen}
-            >
-              <InfoOutlinedIcon />
-            </IconButton>
-            <Popover
-              id={modePopoverId}
-              open={isModePopoverOpen}
-              anchorEl={modeAnchorEl}
-              onClose={handleModePopoverClose}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
+              <Typography>モード:</Typography>
+              <ToggleButtonGroup
+                value={mode}
+                exclusive
+                onChange={handleModeChange}
+                aria-label="Mode"
+                size="small"
+              >
+                <ToggleButton value="now">現在時刻</ToggleButton>
+                <ToggleButton value="manual">手動</ToggleButton>
+              </ToggleButtonGroup>
+              <IconButton
+                aria-describedby={modePopoverId}
+                onClick={handleModePopoverOpen}
+              >
+                <InfoOutlinedIcon />
+              </IconButton>
+              <Popover
+                id={modePopoverId}
+                open={isModePopoverOpen}
+                anchorEl={modeAnchorEl}
+                onClose={handleModePopoverClose}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+              >
+                <Stack sx={{ p: 2 }} spacing={1}>
+                  <Typography variant="body2">
+                    <b>現在時刻:</b> 現在の時刻をリアルタイムで表示します。
+                  </Typography>
+                  <Typography variant="body2">
+                    <b>手動:</b> 時刻を手動で入力できます。
+                  </Typography>
+                </Stack>
+              </Popover>
+            </Stack>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                width: '100%',
+                flex: 1,
               }}
             >
-              <Stack sx={{ p: 2 }} spacing={1}>
-                <Typography variant="body2">
-                  <b>現在時刻:</b> 現在の時刻をリアルタイムで表示します。
-                </Typography>
-                <Typography variant="body2">
-                  <b>手動:</b> 時刻を手動で入力できます。
-                </Typography>
-              </Stack>
-            </Popover>
+              <TextField
+                label="日付フォーマット"
+                value={format}
+                onChange={(e) => setFormat(e.target.value)}
+                fullWidth
+              />
+              <IconButton
+                aria-describedby={formatPopoverId}
+                onClick={handleFormatPopoverOpen}
+              >
+                <InfoOutlinedIcon />
+              </IconButton>
+              <Popover
+                id={formatPopoverId}
+                open={isFormatPopoverOpen}
+                anchorEl={formatAnchorEl}
+                onClose={handleFormatPopoverClose}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+              >
+                <Box sx={{ whiteSpace: 'pre-wrap', p: 2 }}>
+                  <Typography variant="body2">
+                    <a
+                      href="https://day.js.org/docs/en/display/format"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Day.jsのフォーマット文字列
+                    </a>
+                    が使用できます。
+                  </Typography>
+                  <Typography variant="caption">{formatLegend}</Typography>
+                </Box>
+              </Popover>
+            </Box>
           </Stack>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <TextField
-              label="日付フォーマット"
-              value={format}
-              onChange={(e) => setFormat(e.target.value)}
-              fullWidth
-            />
-            <IconButton
-              aria-describedby={formatPopoverId}
-              onClick={handleFormatPopoverOpen}
-            >
-              <InfoOutlinedIcon />
-            </IconButton>
-            <Popover
-              id={formatPopoverId}
-              open={isFormatPopoverOpen}
-              anchorEl={formatAnchorEl}
-              onClose={handleFormatPopoverClose}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-            >
-              <Box sx={{ whiteSpace: 'pre-wrap', p: 2 }}>
-                <Typography variant="body2">
-                  <a
-                    href="https://day.js.org/docs/en/display/format"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Day.jsのフォーマット文字列
-                  </a>
-                  が使用できます。
-                </Typography>
-                <Typography variant="caption">{formatLegend}</Typography>
-              </Box>
-            </Popover>
-          </Box>
         </Stack>
       </Paper>
     </Box>
