@@ -10,7 +10,7 @@ export const useQuerySync = () => {
     throw new Error('useQuerySync must be used within a TimezoneProvider')
   }
 
-  const { time, format, timezones, mode } = context
+  const { time, format, timezones, mode, baseTimezone, baseTimeInput } = context
 
   useEffect(() => {
     const params = new URLSearchParams()
@@ -30,6 +30,22 @@ export const useQuerySync = () => {
       params.delete('time')
     }
 
+    if (mode === 'base') {
+      params.set('baseTimeValue', baseTimeInput)
+      params.set('baseTimezone', baseTimezone)
+    } else {
+      params.delete('baseTimeValue')
+      params.delete('baseTimezone')
+    }
+
     setSearchParams(params, { replace: true })
-  }, [time, format, timezones, mode, setSearchParams])
+  }, [
+    time,
+    format,
+    timezones,
+    mode,
+    baseTimeInput,
+    baseTimezone,
+    setSearchParams,
+  ])
 }

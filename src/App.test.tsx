@@ -2,15 +2,10 @@ import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import App from './App'
-import { getCountryForTimezone } from 'countries-and-timezones'
-import dayjs from './lib/dayjs'
+import { timezoneMap } from './lib/timezones'
 
 const getOptionLabel = (option: string) => {
-  const country = getCountryForTimezone(option)
-  const countryName = country ? country.name : null
-  const utcOffset = dayjs().tz(option).format('Z')
-  const details = [countryName, utcOffset].filter(Boolean).join(', ')
-  return `${option} (${details})`
+  return timezoneMap.get(option)?.label || ''
 }
 
 const renderApp = (initialEntries: string[] = ['/']) => {
@@ -40,11 +35,7 @@ describe('App', () => {
     expect(
       screen.getByDisplayValue(getOptionLabel('Asia/Tokyo')),
     ).toBeInTheDocument()
-    const allTimezones = Intl.supportedValuesOf('timeZone')
-    const expectedTimezone = allTimezones.find((tz) => tz !== 'Asia/Tokyo')
-    expect(
-      screen.getByDisplayValue(getOptionLabel(expectedTimezone!)),
-    ).toBeInTheDocument()
+    expect(screen.getByDisplayValue(getOptionLabel('UTC'))).toBeInTheDocument()
   })
 
   it('removes a timezone when the delete button is clicked', async () => {

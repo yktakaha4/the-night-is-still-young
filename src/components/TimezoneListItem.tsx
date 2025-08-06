@@ -54,7 +54,13 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
 
   useEffect(() => {
     if (context && !isFocused) {
-      setInputValue(context.time.tz(timezone).format(context.format))
+      const { mode, time, format, baseTime, baseTimezone } = context
+      if (mode === 'base') {
+        const baseDateTime = dayjs.tz(baseTime.format(format), baseTimezone)
+        setInputValue(baseDateTime.tz(timezone).format(format))
+      } else {
+        setInputValue(time.tz(timezone).format(format))
+      }
     }
   }, [context, timezone, isFocused])
 
@@ -165,7 +171,7 @@ export const TimezoneListItem = ({ timezone }: TimezoneListItemProps) => {
           onFocus={handleFocus}
           onBlur={handleBlur}
           InputProps={{
-            readOnly: mode === 'now',
+            readOnly: mode !== 'manual',
           }}
           inputProps={{
             'data-testid': `time-input-${timezone}`,
