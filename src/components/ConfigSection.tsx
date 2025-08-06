@@ -8,10 +8,14 @@ import {
   Paper,
   Popover,
   IconButton,
+  Autocomplete,
+  createFilterOptions,
 } from '@mui/material'
 import { useContext, useState } from 'react'
 import { TimezoneContext } from '../contexts/TimezoneContext'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
+import { timezoneData, timezoneMap } from '../lib/timezones'
+import dayjs from '../lib/dayjs'
 
 const formatLegend = `
   YYYY: 4-digit year
@@ -22,6 +26,12 @@ const formatLegend = `
   ss: 2-digit second (00-59)
 `
 
+const filterOptions = createFilterOptions({
+  stringify: (option: (typeof timezoneData)[number]) => {
+    return option.label
+  },
+})
+
 export const ConfigSection = () => {
   const context = useContext(TimezoneContext)
   const [formatAnchorEl, setFormatAnchorEl] =
@@ -29,16 +39,30 @@ export const ConfigSection = () => {
   const [modeAnchorEl, setModeAnchorEl] = useState<HTMLButtonElement | null>(
     null,
   )
+  const [baseTimeInput, setBaseTimeInput] = useState<string>('')
 
   if (!context) {
     return null
   }
 
-  const { format, setFormat, mode, setMode } = context
+  const {
+    format,
+    setFormat,
+    mode,
+    setMode,
+    baseTime,
+    setBaseTime,
+    baseTimezone,
+    setBaseTimezone,
+  } = context
+
+  useState(() => {
+    setBaseTimeInput(baseTime.format(format))
+  })
 
   const handleModeChange = (
     _event: React.MouseEvent<HTMLElement>,
-    newMode: 'now' | 'manual' | null,
+    newMode: 'now' | 'manual' | 'base' | null,
   ) => {
     if (newMode !== null) {
       setMode(newMode)
@@ -65,6 +89,30 @@ export const ConfigSection = () => {
     setModeAnchorEl(null)
   }
 
+  const handleBaseTimezoneChange = (
+    _event: unknown,
+    newValue: (typeof timezoneData)[number] | null,
+  ) => {
+    if (newValue) {
+      setBaseTimezone(newValue.id)
+    }
+  }
+
+  const handleBaseTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setBaseTimeInput(event.target.value)
+    const newTime = dayjs.tz(event.target.value, format, baseTimezone)
+    if (newTime.isValid()) {
+      setBaseTime(newTime)
+    }
+  }
+
+  const handleBaseTimeBlur = () => {
+    const newTime = dayjs.tz(baseTimeInput, format, baseTimezone)
+    if (!newTime.isValid()) {
+      setBaseTimeInput(baseTime.format(format))
+    }
+  }
+
   const isFormatPopoverOpen = Boolean(formatAnchorEl)
   const formatPopoverId = isFormatPopoverOpen
     ? 'format-legend-popover'
@@ -85,21 +133,17 @@ export const ConfigSection = () => {
         sx={{
           mb: 4,
           p: 2,
-          width: { xs: '100%', md: 'auto' },
+          width: '100%',
         }}
       >
         <Stack spacing={2}>
           <Stack
             direction={{ xs: 'column', md: 'row' }}
             spacing={2}
-            alignItems={{ xs: 'center', md: 'flex-start' }}
+            alignItems={{ xs: 'flex-start', md: 'center' }}
           >
-            <Stack
-              direction="row"
-              alignItems="center"
-              sx={{ width: { xs: '100%', md: 'auto' } }}
-            >
-              <Typography sx={{ marginRight: '0.5rem' }}>モード:</Typography>
+            <Stack direction="row" alignItems="center">
+              <Typography sx={{ marginRight: '0.5rem' }}>時刻設定:</Typography>
               <ToggleButtonGroup
                 value={mode}
                 exclusive
@@ -109,6 +153,7 @@ export const ConfigSection = () => {
               >
                 <ToggleButton value="now">現在時刻</ToggleButton>
                 <ToggleButton value="manual">手動</ToggleButton>
+                <ToggleButton value="base">基準時刻</ToggleButton>
               </ToggleButtonGroup>
               <IconButton
                 aria-describedby={modePopoverId}
@@ -131,7 +176,12 @@ export const ConfigSection = () => {
                     <b>現在時刻:</b> 現在の時刻をリアルタイムで表示します。
                   </Typography>
                   <Typography variant="body2">
-                    <b>手動:</b> 時刻を手動で入力できます。
+                    <b>手動:</b>{' '}
+                    タイムゾーンリストの時刻を手動で入力し、他のタイムゾーンの時刻を変換します。
+                  </Typography>
+                  <Typography variant="body2">
+                    <b>基準時刻:</b>
+                    設定した基準の時刻が、各タイムゾーンで何時になるかを表示します。
                   </Typography>
                 </Stack>
               </Popover>
@@ -181,6 +231,40 @@ export const ConfigSection = () => {
               </Popover>
             </Box>
           </Stack>
+          {mode === 'base' && (
+            <Stack
+              direction={{ xs: 'column', md: 'row' }}
+              spacing={2}
+              alignItems="center"
+            >
+              <TextField
+                label="基準時刻"
+                value={baseTimeInput}
+                onChange={handleBaseTimeChange}
+                onBlur={handleBaseTimeBlur}
+                sx={{ width: { xs: '100%', md: 'auto' } }}
+              />
+              <Autocomplete
+                options={timezoneData}
+                value={timezoneMap.get(baseTimezone) || null}
+                onChange={handleBaseTimezoneChange}
+                filterOptions={filterOptions}
+                getOptionLabel={(option) => option.label}
+                renderInput={(params) => (
+                  <TextField {...params} label="基準タイムゾーン" />
+                )}
+                renderOption={(props, option) => {
+                  const { key, ...rest } = props as any
+                  return (
+                    <Box component="li" key={key} {...rest}>
+                      {option.label}
+                    </Box>
+                  )
+                }}
+                sx={{ width: { xs: '100%', md: 300 } }}
+              />
+            </Stack>
+          )}
         </Stack>
       </Paper>
     </Box>

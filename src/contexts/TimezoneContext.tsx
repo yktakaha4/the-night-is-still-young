@@ -8,6 +8,8 @@ import {
 import dayjs, { Dayjs } from '../lib/dayjs'
 import { useSearchParams } from 'react-router-dom'
 
+type Mode = 'now' | 'manual' | 'base'
+
 interface TimezoneContextType {
   time: Dayjs
   setTime: (time: Dayjs) => void
@@ -15,8 +17,12 @@ interface TimezoneContextType {
   setFormat: (format: string) => void
   timezones: string[]
   setTimezones: (timezones: string[]) => void
-  mode: 'now' | 'manual'
-  setMode: (mode: 'now' | 'manual') => void
+  mode: Mode
+  setMode: (mode: Mode) => void
+  baseTime: Dayjs
+  setBaseTime: (time: Dayjs) => void
+  baseTimezone: string
+  setBaseTimezone: (timezone: string) => void
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -27,15 +33,15 @@ export const TimezoneContext = createContext<TimezoneContextType | undefined>(
 export const TimezoneProvider = ({ children }: { children: ReactNode }) => {
   const [searchParams] = useSearchParams()
 
-  const getInitialMode = () => {
+  const getInitialMode = (): Mode => {
     const modeParam = searchParams.get('mode')
-    if (modeParam === 'manual' || modeParam === 'now') {
+    if (modeParam === 'manual' || modeParam === 'now' || modeParam === 'base') {
       return modeParam
     }
     return 'now'
   }
 
-  const getInitialTime = (mode: 'now' | 'manual') => {
+  const getInitialTime = (mode: Mode) => {
     if (mode === 'manual') {
       const timeParam = searchParams.get('time')
       if (timeParam) {
@@ -48,16 +54,36 @@ export const TimezoneProvider = ({ children }: { children: ReactNode }) => {
     return dayjs()
   }
 
+  const getInitialBaseTime = () => {
+    const timeParam = searchParams.get('baseTime')
+    if (timeParam) {
+      const t = dayjs.utc(timeParam)
+      if (t.isValid()) {
+        return t
+      }
+    }
+    return dayjs()
+  }
+
+  const getInitialBaseTimezone = () => {
+    const tzParam = searchParams.get('baseTimezone')
+    return tzParam || 'UTC'
+  }
+
   const getInitialFormat = () => {
     const formatParam = searchParams.get('format')
     return formatParam || 'YYYY/MM/DD HH:mm:ss'
   }
 
-  const [mode, setMode] = useState<'now' | 'manual'>(getInitialMode)
+  const [mode, setMode] = useState<Mode>(getInitialMode)
   const [time, setTime] = useState<Dayjs>(() => getInitialTime(mode))
   const [format, setFormat] = useState(getInitialFormat)
   const [timezones, setTimezones] = useState<string[]>(
     searchParams.getAll('tz'),
+  )
+  const [baseTime, setBaseTime] = useState<Dayjs>(getInitialBaseTime)
+  const [baseTimezone, setBaseTimezone] = useState<string>(
+    getInitialBaseTimezone,
   )
 
   const handleSetTimezones = useCallback((newTimezones: string[]) => {
@@ -87,6 +113,10 @@ export const TimezoneProvider = ({ children }: { children: ReactNode }) => {
         setTimezones: handleSetTimezones,
         mode,
         setMode,
+        baseTime,
+        setBaseTime,
+        baseTimezone,
+        setBaseTimezone,
       }}
     >
       {children}
