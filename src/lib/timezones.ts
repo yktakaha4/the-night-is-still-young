@@ -43,18 +43,37 @@ const staticTimezones: TimezoneData[] = [
 
 const generateTimezoneData = (): TimezoneData[] => {
   const timezones = Intl.supportedValuesOf('timeZone')
-  const dynamicTimezones = timezones.map((tz) => {
-    const country = getCountryForTimezone(tz)
-    const countryName = country ? country.name : null
-    const utcOffset = dayjs().tz(tz).format('Z')
-    const details = [countryName, utcOffset].filter(Boolean).join(', ')
-    return {
+  const staticIds = new Set(staticTimezones.map((tz) => tz.id))
+
+  const dynamicTimezones = timezones
+    .filter((tz) => !staticIds.has(tz)) // Exclude static abbreviations themselves
+    .map((tz) => ({
       id: tz,
-      countryName,
-      utcOffset,
-      label: `${tz} (${details})`,
-    }
-  })
+      offset: dayjs().tz(tz).format('Z'),
+    }))
+    .filter(({ id, offset }) => {
+      // Exclude UTC aliases like Etc/UTC, Etc/GMT from the dynamic list
+      // because we have a static 'UTC' entry.
+      if (offset === '+00:00' || offset === '-00:00') {
+        const lowerId = id.toLowerCase()
+        if (lowerId.includes('utc') || lowerId.includes('gmt')) {
+          return false
+        }
+      }
+      return true
+    })
+    .map(({ id, offset }) => {
+      const country = getCountryForTimezone(id)
+      const countryName = country ? country.name : null
+      const details = [countryName, offset].filter(Boolean).join(', ')
+      return {
+        id: id,
+        countryName,
+        utcOffset: offset,
+        label: `${id} (${details})`,
+      }
+    })
+
   return [...staticTimezones, ...dynamicTimezones]
 }
 

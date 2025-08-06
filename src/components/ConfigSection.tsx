@@ -39,7 +39,6 @@ export const ConfigSection = () => {
   const [modeAnchorEl, setModeAnchorEl] = useState<HTMLButtonElement | null>(
     null,
   )
-  const [baseTimeInput, setBaseTimeInput] = useState<string>('')
 
   if (!context) {
     return null
@@ -54,11 +53,9 @@ export const ConfigSection = () => {
     setBaseTime,
     baseTimezone,
     setBaseTimezone,
+    baseTimeInput,
+    setBaseTimeInput,
   } = context
-
-  useState(() => {
-    setBaseTimeInput(baseTime.format(format))
-  })
 
   const handleModeChange = (
     _event: React.MouseEvent<HTMLElement>,
@@ -95,12 +92,17 @@ export const ConfigSection = () => {
   ) => {
     if (newValue) {
       setBaseTimezone(newValue.id)
+      const newTime = dayjs.tz(baseTimeInput, format, newValue.id)
+      if (newTime.isValid()) {
+        setBaseTime(newTime)
+      }
     }
   }
 
   const handleBaseTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setBaseTimeInput(event.target.value)
-    const newTime = dayjs.tz(event.target.value, format, baseTimezone)
+    const newTimeInput = event.target.value
+    setBaseTimeInput(newTimeInput)
+    const newTime = dayjs.tz(newTimeInput, format, baseTimezone)
     if (newTime.isValid()) {
       setBaseTime(newTime)
     }
