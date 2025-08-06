@@ -28,16 +28,10 @@ const staticTimezones: TimezoneData[] = [
     label: 'CET (Central European Time, +01:00)',
   },
   {
-    id: 'PST',
-    countryName: 'Pacific Standard Time',
-    utcOffset: '-08:00',
-    label: 'PST (Pacific Standard Time, -08:00)',
-  },
-  {
-    id: 'PDT',
-    countryName: 'Pacific Daylight Time',
-    utcOffset: '-07:00',
-    label: 'PDT (Pacific Daylight Time, -07:00)',
+    id: 'America/Los_Angeles',
+    countryName: 'Pacific Time',
+    utcOffset: '-07:00', // This will be dynamically updated
+    label: 'America/Los_Angeles (Pacific Time)',
   },
 ]
 
@@ -47,10 +41,18 @@ const generateTimezoneData = (): TimezoneData[] => {
 
   const dynamicTimezones = timezones
     .filter((tz) => !staticIds.has(tz)) // Exclude static abbreviations themselves
-    .map((tz) => ({
-      id: tz,
-      offset: dayjs().tz(tz).format('Z'),
-    }))
+    .map((tz) => {
+      try {
+        return {
+          id: tz,
+          offset: dayjs().tz(tz).format('Z'),
+        }
+      } catch (e) {
+        console.error(`Invalid timezone: ${tz}`, e)
+        return null
+      }
+    })
+    .filter((tz): tz is { id: string; offset: string } => tz !== null)
     .filter(({ id, offset }) => {
       // Exclude UTC aliases like Etc/UTC, Etc/GMT from the dynamic list
       // because we have a static 'UTC' entry.
@@ -74,7 +76,24 @@ const generateTimezoneData = (): TimezoneData[] => {
       }
     })
 
-  return [...staticTimezones, ...dynamicTimezones]
+  const allTimezones = [...staticTimezones, ...dynamicTimezones].map((tz) => {
+    try {
+      const offset = dayjs().tz(tz.id).format('Z')
+      const country = getCountryForTimezone(tz.id)
+      const countryName = country ? country.name : tz.countryName
+      const details = [countryName, offset].filter(Boolean).join(', ')
+      return {
+        ...tz,
+        utcOffset: offset,
+        label: `${tz.id} (${details})`,
+      }
+    } catch (e) {
+      console.error(`Failed to process timezone: ${tz.id}`, e)
+      return null
+    }
+  })
+
+  return allTimezones.filter((tz): tz is TimezoneData => tz !== null)
 }
 
 export const timezoneData = generateTimezoneData()
